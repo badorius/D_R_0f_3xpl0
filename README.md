@@ -52,7 +52,10 @@ Hello, world!
 └─$ 
 
 ```
-The GNU development tools include a pro-gram called **objdump**, which can be used to examine compiled binaries. Let’sstart by looking at the machine code the main() function was translated into.
+objdump example:
+First column Memory Address
+Second columns DATA IN HEX Format
+rest operators and assembly
 
 ```shell
 └─$ objdump -D firstprog|grep -A20 main.:
@@ -79,15 +82,8 @@ Disassembly of section .fini:
     1170:       48 83 c4 08             add    $0x8,%rsp
 
 ```
-
-Each byte is represented in hexadecimal notation, which is a base-16 numbering system. hexadecimal notation is a conventional notation since a byte contains 8 bits, each of which can be either true or false. This means a byte has 256 (28) possible values, so each byte can be described with 2 hexadecimal digits.
-
-The hexadecimal numbers—starting with 0x8048374 on the far left—are memory addresses. The bits of the machine language instructions must be put somewhere, and this somewhere is called memory. Memory is just a collection of bytes of temporary storage space that are numbered with addresses. 
-
-Each byte of memory can be accessed by its address, 
-Older Intel x86 processors use a 32-bit addressing scheme, while newer ones use a 64-bit one. The 32-bit processors have 2^32 (or 4,294,967,296) possible addresses, while the 64-bit ones have 2^64 (1.84467441 × 10^19) possible addresses.
-
-Personally, I think Intel syntax is much more readable and easier to understand
+1 BYTE = 2 Hex digits
+Intel syntax is much more readable and easier to understand
 ```shell
 objdump -M intel -D firstprog| grep -A20 main.:
 0000000000001139 <main>:
@@ -116,11 +112,8 @@ Disassembly of section .fini:
 
 Processors also have their own set of special variables called registers. Most of the instructions use these registers to read or write data, so understanding the registers of a processor is essential to understanding the instructions.
 
-
-A breakpoint is set on the main() function so execution will stop right before our code is executed. Then GDB runs the program, stops at the breakpoint, and is told to display all the processor registers and their current states.
-
 ```shell
-gdb -q ./firstprog
+gdb -q ./firstprog 
 Reading symbols from ./firstprog...
 (No debugging symbols found in ./firstprog)
 (gdb) break main
@@ -131,11 +124,43 @@ Starting program: /home/darthv/git/badorius/D_R_0f_3xpl0/code/GettingYourHandsDi
 Using host libthread_db library "/usr/lib/libthread_db.so.1".
 
 Breakpoint 1, 0x000055555555513d in main ()
-(gdb) 
+(gdb) info registers
+rax            0x555555555139      93824992235833
+rbx            0x7fffffffe828      140737488349224
+rcx            0x555555557dd8      93824992247256
+rdx            0x7fffffffe838      140737488349240
+rsi            0x7fffffffe828      140737488349224
+rdi            0x1                 1
+rbp            0x7fffffffe710      0x7fffffffe710
+rsp            0x7fffffffe710      0x7fffffffe710
+r8             0x0                 0
+r9             0x7ffff7fce890      140737353934992
+r10            0x7fffffffe440      140737488348224
+r11            0x206               518
+r12            0x0                 0
+r13            0x7fffffffe838      140737488349240
+r14            0x555555557dd8      93824992247256
+r15            0x7ffff7ffd000      140737354125312
+rip            0x55555555513d      0x55555555513d <main+4>
+eflags         0x246               [ PF ZF IF ]
+cs             0x33                51
+ss             0x2b                43
+ds             0x0                 0
+es             0x0                 0
+fs             0x0                 0
+gs             0x0                 0
+(gdb) quit
+A debugging session is active.
+
+	Inferior 1 [process 13305] will be killed.
+
+Quit anyway? (y or n) y
 
 ```
-The first four registers (EAX, ECX, EDX, and EBX) are known as general-purpose registers. These are called the Accumulator, Counter, Data, and Baseregisters, respectively.
-The second four registers (ESP, EBP, ESI, and EDI) are also general-purpose registers, but they are sometimes known as pointers and indexes.These stand for Stack Pointer, Base Pointer, Source Index, and Destination Index,respectively. The first two registers are called pointers because they store 32-bit
+The first four registers: 
+(EAX, ECX, EDX, and EBX) are known as general-purpose registers. These are called the Accumulator, Counter, Data, and Baseregisters, respectively.
+The second four registers 
+(ESP, EBP, ESI, and EDI) are also general-purpose registers, but they are sometimes known as pointers and indexes.These stand for Stack Pointer, Base Pointer, Source Index, and Destination Index,respectively. The first two registers are called pointers because they store 32-bit
 addresses, which essentially point to that location in memory.
 
 The last two registers are also technically pointers,
